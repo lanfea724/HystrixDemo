@@ -2,6 +2,8 @@ package com.baymax724.study.rxjava.hystrix.filter;
 
 import com.netflix.hystrix.HystrixRequestLog;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,8 @@ import java.io.IOException;
  */
 public class HystrixHelloFilter implements Filter {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(HystrixHelloFilter.class);
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -19,6 +23,7 @@ public class HystrixHelloFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        HystrixRequestContext context = HystrixRequestContext.initializeContext();
         StringBuilder requestURL = new StringBuilder();
         try {
             if (request instanceof HttpServletRequest) {
@@ -36,10 +41,10 @@ public class HystrixHelloFilter implements Filter {
             try {
                 if (HystrixRequestContext.isCurrentThreadInitialized()) {
                     HystrixRequestLog log = HystrixRequestLog.getCurrentRequest();
-                    System.out.println(requestURL.toString() + " " + log.getExecutedCommandsAsString());
+                    LOGGER.info("requestURL is : {}, command is : {}", requestURL.toString(), log.getExecutedCommandsAsString());
                 }
             } catch (Exception e) {
-                System.out.println("Unable to append HystrixRequestLog");
+                LOGGER.error("Unable to append HystrixRequestLog, Exception is : {}", e.getMessage());
             }
         }
     }
