@@ -1,5 +1,6 @@
 package com.baymax724.study.rxjava.hystrix.command;
 
+import com.baymax724.study.rxjava.hystrix.storage.HystrixRequestVariables;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 
@@ -17,6 +18,7 @@ public class CommandHelloWorld extends HystrixCommand<String>{
 
     @Override
     protected String run() throws Exception {
-        return "HelloWorld-" + name;
+        String traceId = HystrixRequestVariables.getRequestVariable();
+        return "HelloWorld-" + name + " traceId-" + traceId;
     }
 }

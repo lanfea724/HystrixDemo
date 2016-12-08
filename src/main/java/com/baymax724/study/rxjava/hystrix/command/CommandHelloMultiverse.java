@@ -1,5 +1,6 @@
 package com.baymax724.study.rxjava.hystrix.command;
 
+import com.baymax724.study.rxjava.hystrix.storage.HystrixRequestVariables;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ public class CommandHelloMultiverse extends HystrixCommand<String> {
 
     @Override
     protected String run() throws Exception {
-        return "HelloMultiverse-" + name;
+        String traceId = HystrixRequestVariables.getRequestVariable();
+        return "HelloMultiverse-" + name + " traceId-" + traceId;
     }
 }
