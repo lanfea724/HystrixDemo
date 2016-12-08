@@ -1,5 +1,6 @@
 package com.baymax724.study.rxjava.hystrix.filter;
 
+import com.baymax724.study.rxjava.hystrix.storage.HystrixRequestVariables;
 import com.netflix.hystrix.HystrixRequestLog;
 import com.netflix.hystrix.strategy.concurrency.HystrixRequestContext;
 import org.slf4j.Logger;
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Random;
 
 /**
  * Created by sunao on 2016/12/6.
@@ -15,6 +17,7 @@ import java.io.IOException;
 public class HystrixHelloFilter implements Filter {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(HystrixHelloFilter.class);
+    private final static Random RANDOM = new Random(100);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -24,6 +27,7 @@ public class HystrixHelloFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HystrixRequestContext context = HystrixRequestContext.initializeContext();
+        HystrixRequestVariables.setRequestVariable("traceID-" + RANDOM.nextInt());
         StringBuilder requestURL = new StringBuilder();
         try {
             if (request instanceof HttpServletRequest) {
